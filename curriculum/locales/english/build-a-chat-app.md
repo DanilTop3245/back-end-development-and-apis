@@ -102,13 +102,15 @@ assert.include(
 A WebSocket client should be able to connect to the server.
 
 ```js
+const { WebSocket } = await import("ws");
+
 await new Promise((resolve, reject) => {
-  const WebSocket = new WebSocket("ws://localhost:3001?username=Tester");
-  WebSocket.once("open", () => {
-    WebSocket.close();
+  const __client = new WebSocket("ws://localhost:3001?username=Tester");
+  __client.once("open", () => {
+    __client.close();
     resolve();
   });
-  WebSocket.once("error", (err) =>
+  __client.once("error", (err) =>
     reject(new Error(`WebSocket connection failed: ${err.message}`)),
   );
   setTimeout(() => reject(new Error("WebSocket connection timed out")), 3000);
@@ -118,6 +120,8 @@ await new Promise((resolve, reject) => {
 When a client connects, all existing clients should receive a `{ type: 'system' }` message whose `text` includes the connecting client's username.
 
 ```js
+const { WebSocket } = await import("ws");
+
 const __observer = new WebSocket("ws://localhost:3001?username=Observer");
 await new Promise((res) => __observer.once("open", res));
 
@@ -154,6 +158,8 @@ assert.include(
 When a client sends a message, all connected clients - including the sender - should receive `{ type: 'chat', username, text }`.
 
 ```js
+const { WebSocket } = await import("ws");
+
 const __alice = new WebSocket("ws://localhost:3001?username=Alice");
 const __bob = new WebSocket("ws://localhost:3001?username=Bob");
 await Promise.all([
@@ -216,6 +222,8 @@ assert.equal(
 When a client disconnects, remaining clients should receive a `{ type: 'system' }` message whose `text` includes the disconnected client's username.
 
 ```js
+const { WebSocket } = await import("ws");
+
 const __alice = new WebSocket("ws://localhost:3001?username=Alice");
 const __bob = new WebSocket("ws://localhost:3001?username=Bob");
 await Promise.all([
